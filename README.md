@@ -33,8 +33,4 @@ The model will compare:
 - 3 registration officers
 - 4 registration officers
 
-## Repository Contents
 
-- `Report/` - Mini project report
-- `Dataset/` - Student registration dataset
-- `Model/` - Simulation/model files
