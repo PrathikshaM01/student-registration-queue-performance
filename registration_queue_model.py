@@ -1,34 +1,4 @@
 
-============================================================
-PERFORMANCE MODELLING OF A STUDENT REGISTRATION SYSTEM
-============================================================
-
-System:
-    Student Registration Queue
-
-Model:
-    M/M/4 Queueing Model
-    What-if Capacity Analysis
-
-Dataset:
-    500 student registration records
-    4 registration officers
-
-Outputs:
-    - Performance metrics
-    - Officer analysis
-    - Hourly analysis
-    - M/M/4 queueing results
-    - Capacity what-if analysis
-    - Service improvement analysis
-    - 8 performance graphs
-    - CSV result files
-"""
-
-# ============================================================
-# 1. IMPORT LIBRARIES
-# ============================================================
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,35 +6,6 @@ from scipy import stats
 import math
 import os
 
-
-# ============================================================
-# 2. SYSTEM DESCRIPTION AND PERFORMANCE GOALS
-# ============================================================
-
-"""
-System Chosen:
-    Student Registration Queue
-
-Description:
-    Students arrive at the registration system, wait if all
-    registration officers are busy, receive registration
-    service, and then leave the system.
-
-Performance Goals:
-    1. Minimize student waiting time.
-    2. Maximize registration throughput.
-    3. Measure officer utilization.
-    4. Identify high-congestion periods.
-    5. Identify bottlenecks.
-    6. Evaluate whether four officers provide sufficient capacity.
-    7. Evaluate the effect of increasing registration capacity.
-    8. Evaluate the effect of faster service.
-"""
-
-
-# ============================================================
-# 3. CREATE OUTPUT FOLDER
-# ============================================================
 
 output_folder = "registration_model_results"
 
@@ -77,9 +18,6 @@ print("\nOutput folder created:")
 print(os.path.abspath(output_folder))
 
 
-# ============================================================
-# 4. DATA LOADING
-# ============================================================
 
 file_path = r"C:\Users\Admin\Desktop\6373 MP\Excel Data\Registration_Queue_Simulation.csv"
 
@@ -103,9 +41,6 @@ print("\nOriginal columns:")
 print(df.columns.tolist())
 
 
-# ============================================================
-# 5. CLEAN COLUMN NAMES
-# ============================================================
 
 df.columns = (
     df.columns
@@ -118,9 +53,6 @@ print("\nCleaned columns:")
 print(df.columns.tolist())
 
 
-# ============================================================
-# 6. DATA OVERVIEW
-# ============================================================
 
 print("\n============================================================")
 print("DATA INFORMATION")
@@ -138,9 +70,6 @@ print(
 )
 
 
-# ============================================================
-# 7. CONVERT TIME COLUMNS
-# ============================================================
 
 required_time_columns = [
     "Arrival_Time",
@@ -176,9 +105,6 @@ df["Service_End_Time"] = pd.to_datetime(
 )
 
 
-# ============================================================
-# 8. CHECK FOR INVALID TIME VALUES
-# ============================================================
 
 print("\n============================================================")
 print("TIME DATA VALIDATION")
@@ -200,9 +126,7 @@ print(
 )
 
 
-# ============================================================
-# 9. CALCULATE SERVICE TIME
-# ============================================================
+
 
 df["Calculated_Service_Time"] = (
     df["Service_End_Time"]
@@ -210,9 +134,7 @@ df["Calculated_Service_Time"] = (
 ).dt.total_seconds() / 60
 
 
-# ============================================================
-# 10. CALCULATE WAITING TIME
-# ============================================================
+
 
 df["Calculated_Wait_Time"] = (
     df["Service_Start_Time"]
@@ -220,9 +142,7 @@ df["Calculated_Wait_Time"] = (
 ).dt.total_seconds() / 60
 
 
-# ============================================================
-# 11. CALCULATE TOTAL TIME IN SYSTEM
-# ============================================================
+
 
 df["Calculated_Time_in_System"] = (
     df["Service_End_Time"]
@@ -230,9 +150,7 @@ df["Calculated_Time_in_System"] = (
 ).dt.total_seconds() / 60
 
 
-# ============================================================
-# 12. HANDLE MIDNIGHT / NEGATIVE TIME VALUES
-# ============================================================
+
 
 df.loc[
     df["Calculated_Service_Time"] < 0,
@@ -252,9 +170,6 @@ df.loc[
 ] += 24 * 60
 
 
-# ============================================================
-# 13. USE CALCULATED VALUES
-# ============================================================
 
 df["Service_Time"] = (
     df["Calculated_Service_Time"]
@@ -269,9 +184,6 @@ df["Time_in_System"] = (
 )
 
 
-# ============================================================
-# 14. BASIC PERFORMANCE METRICS
-# ============================================================
 
 print("\n============================================================")
 print("SYSTEM PERFORMANCE")
@@ -340,9 +252,6 @@ print(
 )
 
 
-# ============================================================
-# 15. REGISTRATION OFFICER ANALYSIS
-# ============================================================
 
 print("\n============================================================")
 print("OFFICER ANALYSIS")
@@ -381,9 +290,6 @@ print(
 )
 
 
-# ============================================================
-# 16. OFFICER UTILIZATION
-# ============================================================
 
 first_arrival = (
     df["Arrival_Time"].min()
@@ -407,12 +313,6 @@ print(
 )
 
 
-# Utilization
-#
-# Total busy time of officer
-# --------------------------
-# Total observation time
-#
 
 officer_analysis["Utilization"] = (
     officer_analysis["Total_Service_Time"]
@@ -437,10 +337,6 @@ print(
 )
 
 
-# ============================================================
-# 17. SYSTEM THROUGHPUT
-# ============================================================
-
 observation_hours = (
     observation_time / 60
 )
@@ -463,9 +359,6 @@ print(
 )
 
 
-# ============================================================
-# 18. HOURLY LOAD ANALYSIS
-# ============================================================
 
 df["Arrival_Hour"] = (
     df["Arrival_Time"].dt.hour
@@ -514,9 +407,6 @@ print(
 )
 
 
-# ============================================================
-# 19. PEAK LOAD PERIOD
-# ============================================================
 
 peak_hour = hourly_analysis.loc[
     hourly_analysis["Students_Arrived"].idxmax()
@@ -546,9 +436,6 @@ print(
 )
 
 
-# ============================================================
-# 20. M/M/4 QUEUEING MODEL PARAMETERS
-# ============================================================
 
 """
 M/M/4 Queue:
@@ -629,9 +516,6 @@ print(
 )
 
 
-# ============================================================
-# 21. M/M/C QUEUEING FUNCTION
-# ============================================================
 
 def mmc_queue(lam, mu, c):
 
@@ -642,9 +526,6 @@ def mmc_queue(lam, mu, c):
     )
 
 
-    # --------------------------------------------------------
-    # Unstable system
-    # --------------------------------------------------------
 
     if rho >= 1:
 
@@ -669,18 +550,12 @@ def mmc_queue(lam, mu, c):
         }
 
 
-    # --------------------------------------------------------
-    # Traffic intensity
-    # --------------------------------------------------------
 
     a = (
         lam / mu
     )
 
 
-    # --------------------------------------------------------
-    # Summation
-    # --------------------------------------------------------
 
     summation = 0
 
@@ -692,9 +567,6 @@ def mmc_queue(lam, mu, c):
         ) / math.factorial(n)
 
 
-    # --------------------------------------------------------
-    # Final term
-    # --------------------------------------------------------
 
     final_term = (
 
@@ -711,10 +583,6 @@ def mmc_queue(lam, mu, c):
     )
 
 
-    # --------------------------------------------------------
-    # Probability zero customers
-    # --------------------------------------------------------
-
     P0 = 1 / (
         summation
         +
@@ -722,9 +590,6 @@ def mmc_queue(lam, mu, c):
     )
 
 
-    # --------------------------------------------------------
-    # Average queue length
-    # --------------------------------------------------------
 
     Lq = (
 
@@ -745,27 +610,19 @@ def mmc_queue(lam, mu, c):
     )
 
 
-    # --------------------------------------------------------
-    # Average waiting time
-    # --------------------------------------------------------
 
     Wq_hours = (
         Lq / lam
     )
 
 
-    # --------------------------------------------------------
-    # Average number in system
-    # --------------------------------------------------------
-
+   
     L = (
         Lq + a
     )
 
 
-    # --------------------------------------------------------
-    # Average time in system
-    # --------------------------------------------------------
+  
 
     W_hours = (
         L / lam
@@ -795,9 +652,6 @@ def mmc_queue(lam, mu, c):
     }
 
 
-# ============================================================
-# 22. CURRENT M/M/4 RESULTS
-# ============================================================
 
 queue_results = mmc_queue(
     arrival_rate,
@@ -826,9 +680,6 @@ for key, value in queue_results.items():
         )
 
 
-# ============================================================
-# 23. DISTRIBUTION VALIDATION
-# ============================================================
 
 """
 The M/M/4 model assumes exponential service times.
@@ -905,9 +756,6 @@ else:
     )
 
 
-# ============================================================
-# 24. BOTTLENECK ANALYSIS
-# ============================================================
 
 print("\n============================================================")
 print("BOTTLENECK ANALYSIS")
@@ -940,9 +788,6 @@ print(
 )
 
 
-# ============================================================
-# 25. WAITING TIME CATEGORIES
-# ============================================================
 
 def classify_waiting_time(wait):
 
@@ -987,9 +832,6 @@ print(
 )
 
 
-# ============================================================
-# 26. CAPACITY WHAT-IF ANALYSIS
-# ============================================================
 
 """
 Capacity scenarios:
@@ -1054,9 +896,6 @@ print(
 )
 
 
-# ============================================================
-# 27. SERVICE IMPROVEMENT WHAT-IF ANALYSIS
-# ============================================================
 
 """
 Service improvement scenarios:
@@ -1134,10 +973,6 @@ print(
 )
 
 
-# ============================================================
-# 28. VISUALIZATION 1
-# WAITING TIME DISTRIBUTION
-# ============================================================
 
 print("\nGenerating Graph 1...")
 
@@ -1200,10 +1035,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 29. VISUALIZATION 2
-# SERVICE TIME DISTRIBUTION
-# ============================================================
 
 print("Generating Graph 2...")
 
@@ -1266,10 +1097,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 30. VISUALIZATION 3
-# HOURLY ARRIVAL LOAD
-# ============================================================
 
 print("Generating Graph 3...")
 
@@ -1330,10 +1157,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 31. VISUALIZATION 4
-# AVERAGE WAITING TIME BY HOUR
-# ============================================================
 
 print("Generating Graph 4...")
 
@@ -1396,10 +1219,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 32. VISUALIZATION 5
-# OFFICER UTILIZATION
-# ============================================================
 
 print("Generating Graph 5...")
 
@@ -1469,10 +1288,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 33. VISUALIZATION 6
-# CAPACITY SCENARIO COMPARISON
-# ============================================================
 
 print("Generating Graph 6...")
 
@@ -1537,10 +1352,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 34. VISUALIZATION 7
-# SERVICE IMPROVEMENT
-# ============================================================
 
 print("Generating Graph 7...")
 
@@ -1603,10 +1414,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 35. VISUALIZATION 8
-# OFFICER SERVICE TIME
-# ============================================================
 
 print("Generating Graph 8...")
 
@@ -1669,9 +1476,6 @@ plt.savefig(
 plt.close()
 
 
-# ============================================================
-# 36. SYSTEM MODEL DIAGRAM
-# ============================================================
 
 print(
     """
@@ -1721,9 +1525,6 @@ Student Departure
 )
 
 
-# ============================================================
-# 37. SAVE CLEANED DATA
-# ============================================================
 
 df.to_csv(
 
@@ -1740,10 +1541,6 @@ df.to_csv(
 )
 
 
-# ============================================================
-# 38. SAVE OFFICER PERFORMANCE
-# ============================================================
-
 officer_analysis.to_csv(
 
     os.path.join(
@@ -1757,9 +1554,6 @@ officer_analysis.to_csv(
 )
 
 
-# ============================================================
-# 39. SAVE HOURLY ANALYSIS
-# ============================================================
 
 hourly_analysis.to_csv(
 
@@ -1776,10 +1570,6 @@ hourly_analysis.to_csv(
 )
 
 
-# ============================================================
-# 40. SAVE CAPACITY SCENARIOS
-# ============================================================
-
 scenario_df.to_csv(
 
     os.path.join(
@@ -1795,9 +1585,6 @@ scenario_df.to_csv(
 )
 
 
-# ============================================================
-# 41. SAVE SERVICE IMPROVEMENT SCENARIOS
-# ============================================================
 
 service_df.to_csv(
 
@@ -1813,10 +1600,6 @@ service_df.to_csv(
 
 )
 
-
-# ============================================================
-# 42. SAVE M/M/4 RESULTS
-# ============================================================
 
 queue_results_df = pd.DataFrame({
 
@@ -1846,9 +1629,6 @@ queue_results_df.to_csv(
 )
 
 
-# ============================================================
-# 43. SAVE SUMMARY RESULTS
-# ============================================================
 
 summary_df = pd.DataFrame({
 
@@ -1942,9 +1722,6 @@ summary_df.to_csv(
 )
 
 
-# ============================================================
-# 44. FINAL SUMMARY
-# ============================================================
 
 print("\n")
 print("============================================================")
@@ -2011,10 +1788,6 @@ print(
     f"{int(peak_hour['Students_Arrived'])}"
 )
 
-
-# ============================================================
-# 45. OUTPUT FILE LIST
-# ============================================================
 
 print("\n============================================================")
 print("GENERATED OUTPUT FILES")
